@@ -6,6 +6,8 @@
 // @include     /^https?://pr0gramm.com/.*$/
 // @run-at      document-idle
 // @icon        https://pr0gramm.com/media/pr0gramm-favicon.png
+// @updateURL   https://github.com/Pacerino/pr0sauce_userscript/raw/master/pr0sauce.user.js
+// @downloadURL https://github.com/Pacerino/pr0sauce_userscript/raw/master/pr0sauce.user.js
 // ==/UserScript==
 
 function main() {
