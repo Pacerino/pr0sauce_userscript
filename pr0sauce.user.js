@@ -14,7 +14,7 @@ function main() {
       this.parent(rowIndex, itemData, defaultHeight, jumpToComment);
       if (itemData.video && itemData.audio) {
         $.get("https://api.pr0sauce.info/find/" + itemData.id, function (data) {
-          if (data.id != 0) {
+          if (data.ID > 0) {
             if (data.title.length > 0) {
               $(".item-details").append(
                 `<a href="${data.url}" target="_blank">Musik: ${data.title} von ${data.artist}</a>`
@@ -22,6 +22,8 @@ function main() {
             } else {
               $(".item-details").append("<span>Keine Musik gefunden</span>");
             }
+          } else {
+              $(".item-details").append("<span>@Sauce noch nie markiert</span>");
           }
         });
       }
