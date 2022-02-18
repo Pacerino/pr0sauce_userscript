@@ -1,5 +1,4 @@
 # pr0sauce_userscript
-<img height="155px" width="680px" src="https://i.iiiiiii.li/bH4dD.png" /><br>
 Zeige Informationen von pr0sauce unter einem Video an
 
 <hr>

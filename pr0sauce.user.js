@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name pr0sauce
-// @version     1.0.0
+// @version     1.0.1
 // @author      Helix
 // @description Display information from pr0sauce as small text below the post
 // @include     /^https?://pr0gramm.com/.*$/
@@ -15,19 +15,36 @@ function main() {
     show: function (rowIndex, itemData, defaultHeight, jumpToComment) {
       this.parent(rowIndex, itemData, defaultHeight, jumpToComment);
       if (itemData.video && itemData.audio) {
-        $.get("https://api.pr0sauce.info/find/" + itemData.id, function (data) {
-          if (data.ID > 0) {
-            if (data.title.length > 0) {
-              $(".item-details").append(
-                `<a href="${data.url}" target="_blank">Musik: ${data.title} von ${data.artist}</a>`
-              );
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        var graphql = JSON.stringify({
+          query: "query UserScript($itemID: bigint!) {\r\n  pr0music_items(where: {item_id: {_eq: $itemID}}) {\r\n    id\r\n    url\r\n    artist\r\n    title\r\n  }\r\n}\r\n",
+          variables: { "itemID": itemData.id }
+        })
+        var requestOptions = {
+          method: 'POST',
+          headers: myHeaders,
+          body: graphql,
+          redirect: 'follow'
+        };
+
+        fetch("https://gql.pr0sauce.info/v1/graphql", requestOptions)
+          .then(response => response.json())
+          .then(ret => {
+            if (ret.data.pr0music_items.length > 0) {
+              if (ret.data.pr0music_items[0].title.length > 0) {
+                $(".item-details").append(
+                  `<a href="${ret.data.pr0music_items[0].url}" target="_blank">Musik: ${ret.data.pr0music_items[0].title} von ${ret.data.pr0music_items[0].artist}</a>`
+                );
+              } else {
+                $(".item-details").append("<span>Keine Musik gefunden</span>");
+              }
             } else {
-              $(".item-details").append("<span>Keine Musik gefunden</span>");
-            }
-          } else {
               $(".item-details").append("<span>@Sauce noch nie markiert</span>");
-          }
-        });
+            }
+          })
+          .catch(error => console.log('error', error));
       }
     },
   });
